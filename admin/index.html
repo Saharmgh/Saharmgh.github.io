@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel | Sahar Moghimian Hoosh</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-input: #1a1a2e;
+            --accent: #6366f1;
+            --accent-hover: #818cf8;
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border: #2a2a3e;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --radius: 12px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+        .header {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .header h1 { font-size: 1.2rem; font-weight: 600; }
+        .header h1 span { color: var(--accent); }
+        .header-actions { display: flex; gap: 12px; align-items: center; }
+        .container { max-width: 900px; margin: 0 auto; padding: 32px 24px; }
+
+        /* Auth screen */
+        .auth-screen {
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; min-height: 80vh; text-align: center;
+        }
+        .auth-screen h2 { font-size: 1.5rem; margin-bottom: 8px; }
+        .auth-screen p { color: var(--text-muted); margin-bottom: 24px; max-width: 500px; line-height: 1.6; }
+        .auth-screen .help-text { font-size: 0.8rem; color: var(--text-muted); margin-top: 12px; }
+
+        /* Forms */
+        input, textarea, select {
+            width: 100%; padding: 12px 16px; background: var(--bg-input);
+            border: 1px solid var(--border); border-radius: 8px;
+            color: var(--text); font-family: inherit; font-size: 0.95rem;
+            transition: border-color 0.2s;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none; border-color: var(--accent);
+        }
+        textarea { resize: vertical; min-height: 200px; }
+        label { display: block; font-weight: 500; margin-bottom: 6px; font-size: 0.9rem; }
+        .form-group { margin-bottom: 20px; }
+
+        /* Buttons */
+        .btn {
+            padding: 10px 24px; border: none; border-radius: 8px;
+            font-family: inherit; font-size: 0.9rem; font-weight: 500;
+            cursor: pointer; transition: all 0.2s; display: inline-flex;
+            align-items: center; gap: 8px;
+        }
+        .btn-primary { background: var(--accent); color: white; }
+        .btn-primary:hover { background: var(--accent-hover); }
+        .btn-outline {
+            background: transparent; color: var(--text); border: 1px solid var(--border);
+        }
+        .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-danger:hover { opacity: 0.9; }
+        .btn-small { padding: 6px 14px; font-size: 0.8rem; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* Tabs */
+        .tabs {
+            display: flex; gap: 4px; margin-bottom: 32px;
+            border-bottom: 1px solid var(--border); padding-bottom: 0;
+        }
+        .tab {
+            padding: 12px 20px; background: none; border: none;
+            color: var(--text-muted); font-family: inherit; font-size: 0.9rem;
+            cursor: pointer; border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .tab:hover { color: var(--text); }
+        .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 24px; margin-bottom: 16px;
+        }
+        .card h3 { font-size: 1rem; margin-bottom: 4px; }
+        .card p { color: var(--text-muted); font-size: 0.85rem; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; }
+
+        /* Upload area */
+        .upload-area {
+            border: 2px dashed var(--border); border-radius: var(--radius);
+            padding: 40px; text-align: center; cursor: pointer;
+            transition: all 0.2s; margin-bottom: 16px;
+        }
+        .upload-area:hover, .upload-area.dragover {
+            border-color: var(--accent); background: rgba(99,102,241,0.05);
+        }
+        .upload-area p { color: var(--text-muted); font-size: 0.9rem; }
+        .upload-area .icon { font-size: 2rem; margin-bottom: 8px; }
+
+        /* Preview */
+        .image-preview {
+            display: flex; flex-wrap: wrap; gap: 12px; margin-top: 12px;
+        }
+        .image-preview img {
+            width: 80px; height: 80px; object-fit: cover;
+            border-radius: 8px; border: 1px solid var(--border);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed; bottom: 24px; right: 24px;
+            padding: 14px 24px; border-radius: 8px;
+            font-size: 0.9rem; z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+        .toast-success { background: var(--success); color: white; }
+        .toast-error { background: var(--danger); color: white; }
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Spinner */
+        .spinner {
+            width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white; border-radius: 50%;
+            animation: spin 0.6s linear infinite; display: inline-block;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .header { padding: 12px 16px; }
+            .container { padding: 20px 16px; }
+            .tabs { overflow-x: auto; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Auth Screen -->
+<div id="authScreen" class="auth-screen">
+    <h2>Admin Panel</h2>
+    <p>Enter your GitHub Personal Access Token to manage your site. The token is stored only in your browser's localStorage.</p>
+    <div style="width:100%;max-width:400px;">
+        <input type="password" id="tokenInput" placeholder="ghp_xxxxxxxxxxxx">
+        <button class="btn btn-primary" style="width:100%;margin-top:12px;" onclick="authenticate()">Connect to GitHub</button>
+    </div>
+    <p class="help-text">
+        Create a token at GitHub &rarr; Settings &rarr; Developer settings &rarr; Personal access tokens &rarr; Fine-grained tokens.<br>
+        Give it <strong>read/write access to Contents</strong> for the <code>saharmgh.github.io</code> repo.
+    </p>
+</div>
+
+<!-- Main App -->
+<div id="mainApp" style="display:none;">
+    <div class="header">
+        <h1>S<span>.</span>M Admin</h1>
+        <div class="header-actions">
+            <a href="/" class="btn btn-outline btn-small">View Site</a>
+            <button class="btn btn-outline btn-small" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('blog')">New Blog Post</button>
+            <button class="tab" onclick="switchTab('gallery')">Upload Photos</button>
+            <button class="tab" onclick="switchTab('manage')">Manage Posts</button>
+        </div>
+
+        <!-- New Blog Post -->
+        <div id="tab-blog" class="tab-content active">
+            <div class="card">
+                <h3 style="margin-bottom:20px;">Create a New Blog Post</h3>
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" id="postTitle" placeholder="My New Blog Post">
+                </div>
+                <div class="form-group">
+                    <label>Tag / Category</label>
+                    <input type="text" id="postTag" placeholder="Travel / Conference">
+                </div>
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="text" id="postDate" placeholder="March 2026">
+                </div>
+                <div class="form-group">
+                    <label>Short Description (shown on blog listing)</label>
+                    <textarea id="postExcerpt" rows="2" placeholder="A brief summary of your post..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Cover Image</label>
+                    <div class="upload-area" id="coverUpload" onclick="document.getElementById('coverFile').click()">
+                        <div class="icon">+</div>
+                        <p>Click or drag an image here</p>
+                    </div>
+                    <input type="file" id="coverFile" accept="image/*" style="display:none" onchange="previewCover(this)">
+                    <div id="coverPreview" class="image-preview"></div>
+                </div>
+                <div class="form-group">
+                    <label>Content (HTML — you can use paragraphs, headings, images, etc.)</label>
+                    <textarea id="postContent" rows="12" placeholder="<p>Write your blog post content here...</p>
+
+<p>You can use HTML tags like <strong>, <em>, <h2>, <img>, etc.</p>
+
+<p>For images you've uploaded, use: <img src='../assets/images/blog/your-image.jpg' alt='description'></p>"></textarea>
+                </div>
+                <button class="btn btn-primary" id="publishBtn" onclick="publishPost()">Publish Post</button>
+            </div>
+        </div>
+
+        <!-- Upload Photos -->
+        <div id="tab-gallery" class="tab-content">
+            <div class="card">
+                <h3 style="margin-bottom:20px;">Upload Photos</h3>
+                <div class="form-group">
+                    <label>Upload to folder</label>
+                    <select id="uploadFolder">
+                        <option value="assets/images/">General (assets/images/)</option>
+                        <option value="assets/images/blog/">Blog Images (assets/images/blog/)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Or create a subfolder</label>
+                    <input type="text" id="subfolder" placeholder="e.g., conference-2026 (leave empty for none)">
+                </div>
+                <div class="upload-area" id="photoUpload" onclick="document.getElementById('photoFiles').click()">
+                    <div class="icon">+</div>
+                    <p>Click or drag photos here (multiple allowed)</p>
+                </div>
+                <input type="file" id="photoFiles" accept="image/*" multiple style="display:none" onchange="previewPhotos(this)">
+                <div id="photoPreview" class="image-preview"></div>
+                <button class="btn btn-primary" id="uploadBtn" style="margin-top:16px;" onclick="uploadPhotos()">Upload Photos</button>
+            </div>
+        </div>
+
+        <!-- Manage Posts -->
+        <div id="tab-manage" class="tab-content">
+            <div class="card">
+                <h3 style="margin-bottom:20px;">Existing Blog Posts</h3>
+                <div id="postsList"><p style="color:var(--text-muted);">Loading...</p></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const REPO_OWNER = 'Saharmgh';
+const REPO_NAME = 'saharmgh.github.io';
+const API_BASE = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}`;
+
+let token = localStorage.getItem('gh_admin_token');
+let coverFileData = null;
+let photoFilesData = [];
+
+// --- Auth ---
+function checkAuth() {
+    if (token) {
+        document.getElementById('authScreen').style.display = 'none';
+        document.getElementById('mainApp').style.display = 'block';
+        loadPosts();
+    }
+}
+
+async function authenticate() {
+    const t = document.getElementById('tokenInput').value.trim();
+    if (!t) return;
+    // Verify token
+    try {
+        const res = await fetch(API_BASE, { headers: { 'Authorization': `token ${t}` } });
+        if (res.ok) {
+            token = t;
+            localStorage.setItem('gh_admin_token', t);
+            checkAuth();
+            showToast('Connected to GitHub!', 'success');
+        } else {
+            showToast('Invalid token or no access to repo.', 'error');
+        }
+    } catch (e) {
+        showToast('Connection failed.', 'error');
+    }
+}
+
+function logout() {
+    localStorage.removeItem('gh_admin_token');
+    token = null;
+    document.getElementById('authScreen').style.display = 'flex';
+    document.getElementById('mainApp').style.display = 'none';
+}
+
+// --- Tabs ---
+function switchTab(name) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    event.target.classList.add('active');
+    if (name === 'manage') loadPosts();
+}
+
+// --- GitHub API helpers ---
+function apiHeaders() {
+    return {
+        'Authorization': `token ${token}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+    };
+}
+
+async function getFile(path) {
+    const res = await fetch(`${API_BASE}/contents/${path}`, { headers: apiHeaders() });
+    if (res.ok) return await res.json();
+    return null;
+}
+
+async function createOrUpdateFile(path, content, message, sha = null) {
+    const body = {
+        message,
+        content: btoa(unescape(encodeURIComponent(content))),
+    };
+    if (sha) body.sha = sha;
+    const res = await fetch(`${API_BASE}/contents/${path}`, {
+        method: 'PUT', headers: apiHeaders(), body: JSON.stringify(body)
+    });
+    return res.ok;
+}
+
+async function uploadBinaryFile(path, base64Content, message) {
+    const existing = await getFile(path);
+    const body = {
+        message,
+        content: base64Content,
+    };
+    if (existing) body.sha = existing.sha;
+    const res = await fetch(`${API_BASE}/contents/${path}`, {
+        method: 'PUT', headers: apiHeaders(), body: JSON.stringify(body)
+    });
+    return res.ok;
+}
+
+// --- Blog Post ---
+function slugify(text) {
+    return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+}
+
+function generatePostHTML(title, tag, date, content) {
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${title} | Sahar Moghimian Hoosh</title>
+    <meta name="robots" content="index, follow">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#9889;</text></svg>">
+</head>
+<body>
+    <nav class="nav" id="nav">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo">S<span class="accent">.</span>M</a>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="../index.html#about">About</a></li>
+                <li><a href="../index.html#research">Research</a></li>
+                <li><a href="../blog.html" class="nav-blog-link">Blog</a></li>
+                <li><a href="../index.html#contact" class="nav-cta">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="blog-hero">
+        <h1>${title}</h1>
+        <p>${tag} &mdash; ${date}</p>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <div class="blog-post-content" style="max-width:750px;margin:0 auto;line-height:1.8;">
+                ${content}
+            </div>
+            <div style="text-align:center;margin-top:48px;">
+                <a href="../blog.html" class="btn btn-outline">&larr; Back to Blog</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p class="footer-name">Sahar Moghimian Hoosh</p>
+                <p class="footer-tagline">Decoding signals. Engineering the future.</p>
+                <p class="footer-copy">&copy; 2025 Sahar Moghimian Hoosh. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    <script src="../js/main.js"></script>
+</body>
+</html>`;
+}
+
+function generateBlogCard(slug, title, tag, excerpt, date, coverPath) {
+    const imgHTML = coverPath
+        ? `<img src="${coverPath}" alt="${title}" class="blog-card-image">`
+        : `<div style="width:100%;height:220px;background:linear-gradient(135deg, #6366f1, #8b5cf6);display:flex;align-items:center;justify-content:center;border-bottom:1px solid rgba(99,102,241,0.1);"><span style="font-size:3rem;">&#9997;&#65039;</span></div>`;
+
+    return `
+                <a href="blog/${slug}.html" style="text-decoration:none;color:inherit;">
+                    <article class="blog-card reveal">
+                        ${imgHTML}
+                        <div class="blog-card-body">
+                            <span class="blog-card-tag">${tag}</span>
+                            <h3>${title}</h3>
+                            <p>${excerpt}</p>
+                            <span class="blog-card-date">${date}</span>
+                        </div>
+                    </article>
+                </a>`;
+}
+
+async function publishPost() {
+    const title = document.getElementById('postTitle').value.trim();
+    const tag = document.getElementById('postTag').value.trim();
+    const date = document.getElementById('postDate').value.trim();
+    const excerpt = document.getElementById('postExcerpt').value.trim();
+    const content = document.getElementById('postContent').value.trim();
+
+    if (!title || !content) {
+        showToast('Title and content are required.', 'error');
+        return;
+    }
+
+    const btn = document.getElementById('publishBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Publishing...';
+
+    try {
+        const slug = slugify(title);
+        let coverPath = '';
+
+        // Upload cover image if provided
+        if (coverFileData) {
+            const ext = coverFileData.name.split('.').pop();
+            const imgPath = `assets/images/blog/${slug}-cover.${ext}`;
+            const ok = await uploadBinaryFile(imgPath, coverFileData.base64, `Add cover image for: ${title}`);
+            if (ok) coverPath = imgPath;
+        }
+
+        // Create the blog post HTML
+        const postHTML = generatePostHTML(title, tag || 'Blog', date || new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }), content);
+        const postOk = await createOrUpdateFile(`blog/${slug}.html`, postHTML, `Add blog post: ${title}`);
+
+        if (!postOk) {
+            showToast('Failed to create blog post.', 'error');
+            btn.disabled = false; btn.textContent = 'Publish Post';
+            return;
+        }
+
+        // Update blog.html — insert new card after <div class="blog-grid">
+        const blogFile = await getFile('blog.html');
+        if (blogFile) {
+            let blogHTML = decodeURIComponent(escape(atob(blogFile.content.replace(/\n/g, ''))));
+            const card = generateBlogCard(slug, title, tag || 'Blog', excerpt || '', date || new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }), coverPath);
+            blogHTML = blogHTML.replace('<div class="blog-grid">', '<div class="blog-grid">' + card);
+            await createOrUpdateFile('blog.html', blogHTML, `Add card for: ${title}`, blogFile.sha);
+        }
+
+        showToast('Blog post published!', 'success');
+        // Clear form
+        document.getElementById('postTitle').value = '';
+        document.getElementById('postTag').value = '';
+        document.getElementById('postDate').value = '';
+        document.getElementById('postExcerpt').value = '';
+        document.getElementById('postContent').value = '';
+        document.getElementById('coverPreview').innerHTML = '';
+        coverFileData = null;
+
+    } catch (e) {
+        showToast('Error: ' + e.message, 'error');
+    }
+
+    btn.disabled = false;
+    btn.textContent = 'Publish Post';
+}
+
+// --- Photo Upload ---
+function previewCover(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        document.getElementById('coverPreview').innerHTML = `<img src="${e.target.result}">`;
+        coverFileData = { name: file.name, base64: e.target.result.split(',')[1] };
+    };
+    reader.readAsDataURL(file);
+}
+
+function previewPhotos(input) {
+    photoFilesData = [];
+    const preview = document.getElementById('photoPreview');
+    preview.innerHTML = '';
+    for (const file of input.files) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.innerHTML += `<img src="${e.target.result}">`;
+            photoFilesData.push({ name: file.name, base64: e.target.result.split(',')[1] });
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+async function uploadPhotos() {
+    if (photoFilesData.length === 0) {
+        showToast('Select photos first.', 'error');
+        return;
+    }
+
+    const btn = document.getElementById('uploadBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Uploading...';
+
+    let folder = document.getElementById('uploadFolder').value;
+    const sub = document.getElementById('subfolder').value.trim();
+    if (sub) folder += slugify(sub) + '/';
+
+    let success = 0;
+    for (const photo of photoFilesData) {
+        const path = folder + photo.name.toLowerCase().replace(/\s+/g, '-');
+        const ok = await uploadBinaryFile(path, photo.base64, `Upload photo: ${photo.name}`);
+        if (ok) success++;
+    }
+
+    showToast(`Uploaded ${success}/${photoFilesData.length} photos!`, success > 0 ? 'success' : 'error');
+    photoFilesData = [];
+    document.getElementById('photoPreview').innerHTML = '';
+    document.getElementById('photoFiles').value = '';
+    btn.disabled = false;
+    btn.textContent = 'Upload Photos';
+}
+
+// --- Manage Posts ---
+async function loadPosts() {
+    const list = document.getElementById('postsList');
+    try {
+        const res = await fetch(`${API_BASE}/contents/blog`, { headers: apiHeaders() });
+        if (!res.ok) { list.innerHTML = '<p style="color:var(--text-muted);">No blog posts found.</p>'; return; }
+        const files = await res.json();
+        const posts = files.filter(f => f.name.endsWith('.html'));
+        if (posts.length === 0) {
+            list.innerHTML = '<p style="color:var(--text-muted);">No blog posts yet.</p>';
+            return;
+        }
+        list.innerHTML = posts.map(f => `
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);">
+                <div>
+                    <strong>${f.name.replace('.html','').replace(/-/g,' ')}</strong>
+                    <br><span style="font-size:0.8rem;color:var(--text-muted);">blog/${f.name}</span>
+                </div>
+                <div style="display:flex;gap:8px;">
+                    <a href="/blog/${f.name}" target="_blank" class="btn btn-outline btn-small">View</a>
+                    <button class="btn btn-danger btn-small" onclick="deletePost('${f.name}','${f.sha}')">Delete</button>
+                </div>
+            </div>`).join('');
+    } catch (e) {
+        list.innerHTML = '<p style="color:var(--text-muted);">Failed to load posts.</p>';
+    }
+}
+
+async function deletePost(filename, sha) {
+    if (!confirm(`Delete blog/${filename}? This cannot be undone.`)) return;
+    const res = await fetch(`${API_BASE}/contents/blog/${filename}`, {
+        method: 'DELETE',
+        headers: apiHeaders(),
+        body: JSON.stringify({ message: `Delete blog post: ${filename}`, sha })
+    });
+    if (res.ok) {
+        showToast('Post deleted.', 'success');
+        loadPosts();
+    } else {
+        showToast('Failed to delete.', 'error');
+    }
+}
+
+// --- Drag & Drop ---
+['coverUpload', 'photoUpload'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('dragover', e => { e.preventDefault(); el.classList.add('dragover'); });
+    el.addEventListener('dragleave', () => el.classList.remove('dragover'));
+    el.addEventListener('drop', e => {
+        e.preventDefault(); el.classList.remove('dragover');
+        const input = id === 'coverUpload' ? document.getElementById('coverFile') : document.getElementById('photoFiles');
+        input.files = e.dataTransfer.files;
+        input.dispatchEvent(new Event('change'));
+    });
+});
+
+// --- Toast ---
+function showToast(msg, type) {
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3500);
+}
+
+// Init
+checkAuth();
+</script>
+</body>
+</html>
