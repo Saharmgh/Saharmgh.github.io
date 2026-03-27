@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://saharmgh.github.io/sitemap.xml
