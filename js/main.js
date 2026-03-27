@@ -39,14 +39,14 @@
         const centerY = canvas.height * 0.5;
 
         // Multiple signal-like waves
-        drawWave(centerY - 60, 30, 0.008, 0.8, 'rgba(99, 102, 241, 0.15)', 1.5);
-        drawWave(centerY, 40, 0.006, 0.6, 'rgba(51, 102, 255, 0.12)', 2);
-        drawWave(centerY + 50, 25, 0.01, 1.0, 'rgba(124, 58, 237, 0.1)', 1);
-        drawWave(centerY - 30, 20, 0.012, 1.2, 'rgba(34, 211, 238, 0.08)', 1);
-        drawWave(centerY + 80, 35, 0.007, 0.5, 'rgba(139, 92, 246, 0.08)', 1.5);
+        drawWave(centerY - 60, 30, 0.008, 0.8, 'rgba(99, 102, 241, 0.2)', 1.5);
+        drawWave(centerY, 40, 0.006, 0.6, 'rgba(51, 102, 255, 0.15)', 2);
+        drawWave(centerY + 50, 25, 0.01, 1.0, 'rgba(124, 58, 237, 0.12)', 1);
+        drawWave(centerY - 30, 20, 0.012, 1.2, 'rgba(8, 145, 178, 0.1)', 1);
+        drawWave(centerY + 80, 35, 0.007, 0.5, 'rgba(139, 92, 246, 0.1)', 1.5);
 
         // Subtle grid lines
-        ctx.strokeStyle = 'rgba(99, 102, 241, 0.03)';
+        ctx.strokeStyle = 'rgba(99, 102, 241, 0.05)';
         ctx.lineWidth = 0.5;
         for (let y = 0; y < canvas.height; y += 60) {
             ctx.beginPath();
@@ -66,7 +66,7 @@
             const px = (Math.sin(time * 0.3 + i * 2.1) * 0.5 + 0.5) * canvas.width;
             const py = (Math.cos(time * 0.2 + i * 1.7) * 0.5 + 0.5) * canvas.height;
             const size = Math.sin(time + i) * 1.5 + 2;
-            const alpha = Math.sin(time * 0.5 + i) * 0.15 + 0.15;
+            const alpha = Math.sin(time * 0.5 + i) * 0.12 + 0.12;
 
             ctx.beginPath();
             ctx.arc(px, py, size, 0, Math.PI * 2);
