@@ -1561,3 +1561,163 @@ img {
 .lightbox-close:hover {
     background: rgba(99, 102, 241, 0.3);
 }
+
+/* ========================================
+   CERTIFICATES
+   ======================================== */
+.certificates-heading {
+    margin-top: 56px;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.certificates-intro {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-top: 6px;
+}
+
+.certificates-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    margin-top: 24px;
+}
+
+.certificate-card {
+    background: var(--bg-card);
+    border: 1px solid rgba(99, 102, 241, 0.12);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    transition: var(--transition);
+}
+
+.certificate-card:hover {
+    border-color: rgba(99, 102, 241, 0.25);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(99, 102, 241, 0.06), 0 0 20px var(--glow-indigo);
+}
+
+.certificate-thumb {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: var(--bg-secondary);
+    cursor: zoom-in;
+    line-height: 0;
+}
+
+.certificate-thumb img {
+    width: 100%;
+    height: 220px;
+    object-fit: contain;
+    object-position: center;
+    display: block;
+    padding: 12px;
+    box-sizing: border-box;
+    transition: var(--transition);
+}
+
+.certificate-thumb:hover img { transform: scale(1.02); }
+
+.certificate-thumb:focus-visible {
+    outline: 2px solid var(--blue);
+    outline-offset: -2px;
+}
+
+.certificate-zoom {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(26, 26, 46, 0.72);
+    color: #fff;
+    font-size: 0.85rem;
+    line-height: 30px;
+    text-align: center;
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.certificate-thumb:hover .certificate-zoom,
+.certificate-thumb:focus-visible .certificate-zoom { opacity: 1; }
+
+.certificate-card figcaption { padding: 18px 20px 20px; }
+
+.certificate-card figcaption h4 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+    line-height: 1.35;
+}
+
+.certificate-card figcaption p {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    line-height: 1.55;
+}
+
+/* Lightbox */
+.certificate-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(12, 12, 24, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4vh 4vw;
+}
+
+.certificate-lightbox[hidden] { display: none; }
+
+.certificate-lightbox figure {
+    margin: 0;
+    max-width: 1000px;
+    width: 100%;
+    text-align: center;
+}
+
+.certificate-lightbox img {
+    max-width: 100%;
+    max-height: 82vh;
+    border-radius: var(--radius);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+}
+
+.certificate-lightbox figcaption {
+    color: #f2f2f7;
+    font-size: 0.9rem;
+    margin-top: 14px;
+}
+
+.certificate-lightbox-close {
+    position: absolute;
+    top: 18px;
+    right: 24px;
+    width: 42px;
+    height: 42px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    font-size: 1.6rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.certificate-lightbox-close:hover { background: rgba(255, 255, 255, 0.24); }
+
+@media (max-width: 600px) {
+    .certificates-grid { grid-template-columns: 1fr; gap: 18px; }
+    .certificate-thumb img { height: 180px; }
+}

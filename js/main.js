@@ -360,3 +360,43 @@ document.addEventListener('keydown', (e) => {
 
     sections.forEach(section => observer.observe(section));
 })();
+
+// ─── Certificate Lightbox ────────────────────────────
+(function initCertificateLightbox() {
+    const lightbox = document.getElementById('certificateLightbox');
+    if (!lightbox) return;
+
+    const img = document.getElementById('certificateLightboxImg');
+    const caption = document.getElementById('certificateLightboxCaption');
+    const closeBtn = lightbox.querySelector('.certificate-lightbox-close');
+    let lastFocused = null;
+
+    function open(trigger) {
+        lastFocused = trigger;
+        img.src = trigger.dataset.full;
+        img.alt = trigger.querySelector('img').alt;
+        caption.textContent = trigger.dataset.caption || '';
+        lightbox.hidden = false;
+        document.body.style.overflow = 'hidden';
+        closeBtn.focus();
+    }
+
+    function close() {
+        lightbox.hidden = true;
+        img.src = '';
+        document.body.style.overflow = '';
+        if (lastFocused) lastFocused.focus();
+    }
+
+    document.querySelectorAll('.certificate-thumb').forEach(function (btn) {
+        btn.addEventListener('click', function () { open(btn); });
+    });
+
+    closeBtn.addEventListener('click', close);
+    lightbox.addEventListener('click', function (e) {
+        if (e.target === lightbox) close();
+    });
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && !lightbox.hidden) close();
+    });
+})();
