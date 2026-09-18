@@ -101,8 +101,8 @@
     if (!element) return;
 
     const roles = [
-        'PhD Researcher @ Skoltech',
-        'Project Manager @ MoniSensa',
+        'Energy Researcher',
+        'Co-founder @ VisiWatt',
         'Energy Systems Engineer',
         'NILM Researcher',
         'Signal Processing Enthusiast'
